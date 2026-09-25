@@ -5,19 +5,39 @@ import Image from 'next/image';
 
 export default function Home() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.name && formData.phone) {
-      setIsSubmitted(true);
-      setTimeout(() => {
-        setIsSubmitted(false);
+    if (!formData.name || !formData.phone) return;
+
+    setIsLoading(true);
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzMVybd6oKepxRfWmCMCIQSzyWcCBfviAEaCv7zeLtRcuS0EunSOzFSHCjG0vsUpJYF/exec";
+
+    try {
+      const response = await fetch(scriptURL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setIsSubmitted(true);
         setFormData({ name: '', phone: '' });
-      }, 4000);
+        
+        setTimeout(() => {
+          setIsSubmitted(false);
+        }, 4000);
+      }
+    } catch (error) {
+      console.error("Error submitting to Google Sheets:", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -60,7 +80,7 @@ export default function Home() {
             </div>
             <div>
               <div className="contact-item-title">Email</div>
-              <div className="contact-item-desc">support@example.com</div>
+              <div className="contact-item-desc">saadpopz12@gmail.com</div>
             </div>
           </div>
           
@@ -72,7 +92,7 @@ export default function Home() {
             </div>
             <div>
               <div className="contact-item-title">Phone</div>
-              <div className="contact-item-desc">+91 98765 43210<br/>Mon - Sat, 9AM - 6PM</div>
+              <div className="contact-item-desc">+91 7592956227<br/>Mon - Sat, 9AM - 6PM</div>
             </div>
           </div>
 
@@ -137,8 +157,8 @@ export default function Home() {
               </div>
             </div>
 
-            <button type="submit" className="submit-btn">
-              Send Message
+            <button type="submit" className="submit-btn" disabled={isLoading} style={{ opacity: isLoading ? 0.7 : 1 }}>
+              {isLoading ? 'Sending...' : 'Send Message'}
               <div className="submit-icon-wrapper">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12"></line>
