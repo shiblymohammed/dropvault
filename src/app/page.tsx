@@ -135,6 +135,8 @@ export default function Home() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
+                  autoComplete="name"
+                  enterKeyHint="next"
                 />
               </div>
             </div>
@@ -153,6 +155,8 @@ export default function Home() {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   required
+                  autoComplete="tel"
+                  enterKeyHint="send"
                 />
               </div>
             </div>
